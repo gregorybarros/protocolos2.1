@@ -9,6 +9,8 @@ app.use(express.json())
 app.use(cors())
 require('./controllers/auth')(app)
 require('./controllers/users')(app)
+require('./controllers/clients')(app)
+require('./controllers/protocols')(app)
 
 // Porta servidor
 app.listen(3000, () => {

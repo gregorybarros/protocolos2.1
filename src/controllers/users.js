@@ -7,8 +7,16 @@ const router = express.Router()
 router.use(authMiddleware)
 
 router.get('/', async (req, res) => {
-    const user = await Usuario.findOne ({_id: req.userId})
-    res.send({ok:true, user:req.userId, nome:user.nome})
+
+    try {
+        const users = await Usuario.find ().sort({nome:1})
+        res.send(users)
+    }
+    catch (err) {
+        res.status(400).send({error:"Erro ao listar usuarios!"})
+
+    }  
+      
 })
 
 module.exports = app => app.use('/users', router)
