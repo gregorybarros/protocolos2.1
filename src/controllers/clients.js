@@ -18,7 +18,21 @@ router.get('/', async (req,res) => {
       
 })
 
+router.get('/:id', async (req, res) => {
 
+    const { id } = req.params
+
+    try {
+        const FindClient = await Client.findOne({ _id: req.params.id })
+
+        return res.send(FindClient)
+    } catch (err) {
+
+        res.status(400).send('Cliente nao encontrado'+err)
+
+    }
+
+})
 
 router.post('/addclient', async (req, res) => {
    
@@ -54,6 +68,44 @@ router.post('/addclient', async (req, res) => {
 
         }
     
+
+})
+
+router.put('/edit', async (req, res) => {
+
+    const { name, slug, _id } = req.body
+
+
+    try {
+        let EditClient = await Client.findOne({ _id: req.body._id }).updateOne({
+
+            name: req.body.name,
+            slug: req.body.slug
+        })
+    
+        return res.send(EditClient)
+    } catch (err) {
+
+        res.status(400).send('Erro ao editar cliente!'+err)
+        
+    }
+
+})
+
+router.delete('/delete/:id', async (req, res) => {
+
+    const { id } = req.params
+
+
+    try {
+        await Client.findOneAndDelete({ _id: req.params.id })
+    
+        return res.send('Cliente deletado com sucesso')
+    } catch (err) {
+
+        res.status(400).send('Erro ao deletar cliente!'+err)
+        
+    }
 
 })
 
