@@ -52,7 +52,7 @@ router.put('/edit', async (req, res) => {
             dataAdm: req.body.dataAdm,
             sexo: req.body.sexo
         })
-        console.log(EditUser)
+
         return res.send(EditUser)
     } catch (err) {
 

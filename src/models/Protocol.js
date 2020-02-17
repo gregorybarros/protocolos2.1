@@ -1,5 +1,7 @@
 const mongoose = require("../databases")
 const Schema = mongoose.Schema
+const {format} = require('date-fns')
+const pt = require('date-fns/locale/pt-BR')
 
 const Protocol = new Schema({
     title: {
@@ -16,8 +18,9 @@ const Protocol = new Schema({
         required: true
     },
     createdAt: {
-        type: Date,
-        default: Date.now,
+        type: String,
+        default: format(new Date(), "dd/MM/yy 'às' HH:mm", { timeZone:'America/Sao_Paulo', locale:pt }),
+        
     },
 })
 

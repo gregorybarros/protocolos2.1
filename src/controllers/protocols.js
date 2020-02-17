@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params
 
     try {
-        const FindProtocol = await Protocol.findOne({ _id: req.params.id })
+        const FindProtocol = await Protocol.findOne({ _id: req.params.id }).populate("client")
 
         return res.send(FindProtocol)
     } catch (err) {
@@ -79,15 +79,13 @@ router.post('/addprotocol', async (req, res) => {
 })
 
 router.put('/edit', async (req, res) => {
-
-    const { title, content, _id } = req.body
-
-
+console.log(req.body)
     try {
-        let EditProtocol = await Protocol.findOne({ _id: req.body._id }).updateOne({
+        let EditProtocol = await Protocol.findOne({ _id: req.body.id }).updateOne({
 
             title: req.body.title,
-            content: req.body.content
+            content: req.body.content,
+            client: req.body.client
         })
     
         return res.send(EditProtocol)
@@ -105,7 +103,7 @@ router.delete('/delete/:id', async (req, res) => {
 
 
     try {
-        await Protocol.findOneAndDelete({ _id: req.params.id })
+        await Protocol.findOneAndDelete({ _id: id })
     
         return res.send('Protocolo deletado com sucesso')
     } catch (err) {

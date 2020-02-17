@@ -96,7 +96,6 @@ router.delete('/delete/:id', async (req, res) => {
 
     const { id } = req.params
 
-
     try {
         await Client.findOneAndDelete({ _id: req.params.id })
     
