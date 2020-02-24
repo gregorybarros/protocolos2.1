@@ -35,16 +35,44 @@ router.get('/:id', async (req, res) => {
 })
 
 router.post('/addclient', async (req, res) => {
-   
-    const { name, slug } = req.body
+    console.log(req.body)
+    const { code, name, category, resp, email, adress, city, zip, state, since, obs, soft } = req.body
     let errors = []
 
-    if(!req.body.name || req.body.name.length < 2 || typeof req.body.name == undefined || req.body.name == null) {
+    if(!code || code.length <= 0 || typeof code == undefined || code == null) {
+        errors.push({message: "Codigo invalido"})
+    }
+
+    if(!name || name.length < 2 || typeof name == undefined || name == null) {
         errors.push({message: "Nome invalido"})
+    }   
+
+    if(!category || category.length < 2 || typeof category == undefined || category == null) {
+        errors.push({message: "Categoria invalido"})
     }
     
-    if(!req.body.slug || req.body.slug.length < 2 || typeof req.body.slug == undefined || req.body.slug == null) {
-        errors.push({message: "Slug invalido"})
+    if(!resp || resp.length < 2 || typeof resp == undefined || resp == null) {
+        errors.push({message: "Nome responsavel invalido"})
+    }
+
+    if(!adress || adress.length < 2 || typeof adress == undefined || adress == null) {
+        errors.push({message: "Endereço invalido"})
+    }
+
+    if(!city || city.length < 2 || typeof city == undefined || city == null) {
+        errors.push({message: "Cidade invalido"})
+    }
+
+    if(!state || state.length < 2 || typeof state == undefined || state == null) {
+        errors.push({message: "Estado invalido"})
+    }
+
+    if(!since || since.length < 2 || typeof since == undefined || since == null) {
+        errors.push({message: "Data invalida"})
+    }
+
+    if(!soft || soft.length < 2 || typeof soft == undefined || soft == null) {
+        errors.push({message: "Software invalido"})
     }
 
     if(errors.length > 0) {
@@ -53,12 +81,12 @@ router.post('/addclient', async (req, res) => {
 
         try{
                      
-            if(await Client.findOne({ name }))
+            if(await Client.findOne({ name, code }))
             return res.status(400).send({message: 'Cliente ja existe'})
                 
         
             const newClient = await Client.create(req.body)
-            
+            console.log(newClient)
 
             return res.send({message:"Cliente criado com sucesso!", newClient})
         }

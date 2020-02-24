@@ -2,17 +2,25 @@ const express = require('express')
 const Protocol = require('../models/Protocol')
 
 
+
 const router = express.Router()
 
 
 router.get('/', async (req, res) => {
-
+console.log('ALguem entrou')
     try {
-        const protocols = await Protocol.find().populate("client").sort({ createdAt: "desc" })
-        res.send(protocols)
+        const {page, perPage} = req.query
+        const options = {
+            page: parseInt(page, 10) || 1,
+            limit: parseInt(perPage, 10) || 10,
+            populate:'client'
+        }
+        await Protocol.paginate({}, options, function(err, protocols){res.send(protocols)})
+            
+        
     }
     catch (err) {
-        res.status(400).send({ error: "Erro ao listar protocolos!" })
+        res.status(400).send({ error: "Erro ao listar protocolos!" }+err)
 
     }
 
@@ -35,7 +43,7 @@ router.get('/:id', async (req, res) => {
 })
 
 router.post('/addprotocol', async (req, res) => {
-
+console.log(req.body)
 
     const { title, content, client } = req.body
 
@@ -79,9 +87,9 @@ router.post('/addprotocol', async (req, res) => {
 })
 
 router.put('/edit', async (req, res) => {
-console.log(req.body)
+
     try {
-        let EditProtocol = await Protocol.findOne({ _id: req.body.id }).updateOne({
+        let EditProtocol = await Protocol.findOne({ _id: req.body._id }).updateOne({
 
             title: req.body.title,
             content: req.body.content,
