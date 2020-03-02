@@ -1,14 +1,19 @@
 const mongoose = require("../databases")
 const Schema = mongoose.Schema
+
 const {format} = require('date-fns')
 const pt = require('date-fns/locale/pt-BR')
+
 const mongoosePaginate = require("mongoose-paginate")
+const AutoIncrement = require('mongoose-sequence')(mongoose)
 
 
 const Protocol = new Schema({
+
+
     title: {
         type: String,
-        required: true
+        required: true,
     },
     content: {
         type: String,
@@ -19,9 +24,14 @@ const Protocol = new Schema({
         ref: "clients",
         required: true
     },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "users",
+        required: true
+    },
     date: {
         type: String,
-        default: format(new Date(), "dd/MM/yy 'às' HH:mm", { timeZone:'America/Sao_Paulo', locale:pt }),
+
         
     },
     createdAt: {
@@ -29,9 +39,10 @@ const Protocol = new Schema({
         default: Date.now,
         
     },
+
 })
 
+Protocol.plugin(AutoIncrement, {inc_field: 'num'})
 Protocol.plugin(mongoosePaginate)
-
 
 module.exports = mongoose.model('protocols', Protocol)

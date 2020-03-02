@@ -2,12 +2,13 @@ const mongoose = require("../databases")
 const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 
-const Usuario = new Schema ({
-    nome:{
+const User = new Schema ({
+    
+    name:{
         type:String,
         required: true,
     },
-    sobrenome:{
+    secondName:{
         type: String,
         required: true,
     },
@@ -17,39 +18,42 @@ const Usuario = new Schema ({
         lowercase: true,
         required: true,
     },
-    cidade:{
+    phone:{
         type:String,
         required:true,
     },
-    estado:{
+    office:{
         type:String,
         required:true,
     },
-    cep:{
+    dateBirth:{
+        type:Date,
+        required:true,
+    },
+    dateAdm:{
+        type:Date,
+        required:true,
+    },
+    zip:{
         type:String,
         required:true,
     },
-    endereco:{
+    city:{
         type:String,
         required:true,
     },
-    senha:{
+    state:{
+        type:String,
+        required:true,
+    },
+    adress:{
+        type:String,
+        required:true,
+    },
+    password:{
         type:String,
         select: false,
         required:true,
-    },
-    dataNas:{
-        type:String,
-        required:true,
-    },
-    dataAdm:{
-        type:String,
-        required:true,
-    },
-    sexo:{
-        type:String,
-        required:true,
-        
     },
     eAdmin:{
         type:Number,
@@ -59,15 +63,24 @@ const Usuario = new Schema ({
         type: Date,
         default: Date.now,
     },
+    totalProt:{
+        type:Number,
+        default: 0,
+    },
+    phrase:{
+        type:String,
+        default: "",
+
+    }
 
 })
 
-Usuario.pre('save', async function(next) {
-    const hash = await bcrypt.hash(this.senha, 10)
-    this.senha = hash
+User.pre('save', async function(next) {
+    const hash = await bcrypt.hash(this.password, 10)
+    this.password = hash
 
     next()
 })
     
-module.exports = mongoose.model("usuarios", Usuario)
+module.exports = mongoose.model("users", User)
     

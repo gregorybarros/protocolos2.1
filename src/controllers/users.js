@@ -1,6 +1,6 @@
 const express = require('express')
 const authMiddleware = require('../middlewares/auth')
-const Usuario = require('../models/Usuario')
+const User = require('../models/User')
 
 const router = express.Router()
 
@@ -9,7 +9,7 @@ const router = express.Router()
 router.get('/', async (req, res) => {
 
     try {
-        const users = await Usuario.find ().sort({nome:1})
+        const users = await User.find().sort({createdAt:'desc'})
         res.send(users)
     }
     catch (err) {
@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params
 
     try {
-        const FindUser = await Usuario.findOne({ _id: req.params.id })
+        const FindUser = await User.findOne({ _id: req.params.id })
 
         return res.send(FindUser)
     } catch (err) {
@@ -36,22 +36,9 @@ router.get('/:id', async (req, res) => {
 })
 
 router.put('/edit', async (req, res) => {
-
+console.log(req.body)
     try {
-        let EditUser = await Usuario.findOne({ _id: req.body._id }).updateOne({
-
-            nome: req.body.nome,
-            sobrenome: req.body.sobrenome,
-            email: req.body.email,
-            cidade: req.bodycidade,
-            cep: req.body.cep,
-            endereco: req.body.endereco,
-            estado:req.body.estado,
-            senha: req.body.senha,
-            dataNas: req.body.dataNas,
-            dataAdm: req.body.dataAdm,
-            sexo: req.body.sexo
-        })
+        let EditUser = await User.findOneAndUpdate({ _id: req.body._id }, req.body)
 
         return res.send(EditUser)
     } catch (err) {
@@ -68,7 +55,7 @@ router.delete('/delete/:id', async (req, res) => {
 
 
     try {
-        await Usuario.findOneAndDelete({ _id: req.params.id })
+        await User.findOneAndDelete({ _id: req.params.id })
     
         return res.send('Usuario deletado com sucesso')
     } catch (err) {

@@ -5,6 +5,7 @@ mongoose.connect("mongodb://localhost/apirest", {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
+    useFindAndModify: false,
 
 }).then(() => {
     console.log('MongoDB Conectado...')

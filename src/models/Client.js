@@ -1,5 +1,7 @@
 const mongoose = require("../databases")
 const Schema = mongoose.Schema
+const {format} = require('date-fns')
+const pt = require('date-fns/locale/pt-BR')
 
 const Client = new Schema({
     code: {
@@ -39,8 +41,8 @@ const Client = new Schema({
         required: true
     },
     since: {
-        type: Date,
-        required: true
+        type: String,
+        default: format(new Date(), "dd/MM/yy", { timeZone:'America/Sao_Paulo', locale:pt }),
     },
     obs: {
         type: String,

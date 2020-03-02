@@ -1,21 +1,28 @@
 const express = require('express')
 const Protocol = require('../models/Protocol')
+const User = require('../models/User')
 
-
+const {format} = require('date-fns')
+const pt = require('date-fns/locale/pt-BR')
 
 const router = express.Router()
 
 
 router.get('/', async (req, res) => {
-console.log('ALguem entrou')
+console.log(req.query)
     try {
-        const {page, perPage} = req.query
+        const {page, perPage, sort} = req.query
         const options = {
             page: parseInt(page, 10) || 1,
             limit: parseInt(perPage, 10) || 10,
-            populate:'client'
+            populate:['client','user'],
+            sort: {createdAt:sort||"desc"}         
         }
-        await Protocol.paginate({}, options, function(err, protocols){res.send(protocols)})
+        const{filter, equal} = req.query
+
+
+
+        await Protocol.paginate({[filter]:equal}, options, function(err, protocols){res.send(protocols)})
             
         
     }
@@ -31,7 +38,7 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params
 
     try {
-        const FindProtocol = await Protocol.findOne({ _id: req.params.id }).populate("client")
+        const FindProtocol = await Protocol.findOne({ _id: req.params.id }).populate(["client","user"])
 
         return res.send(FindProtocol)
     } catch (err) {
@@ -43,9 +50,8 @@ router.get('/:id', async (req, res) => {
 })
 
 router.post('/addprotocol', async (req, res) => {
-console.log(req.body)
 
-    const { title, content, client } = req.body
+    const { title, content, client, num } = req.body
 
     let errors = []
 
@@ -68,12 +74,22 @@ console.log(req.body)
 
         try {
 
-            if (await Protocol.findOne({ title }))
+            if (await Protocol.findOne({ num }))
                 return res.status(400).send({ message: 'Protocolo ja existe' })
+            
+            const date = format(new Date, "dd/MM/yy 'às' HH:mm", { timeZone:'America/Sao_Paulo', locale:pt })
 
+            const newProtocol = await Protocol.create({
+                title:req.body.title,
+                content:req.body.content,
+                client:req.body.client,
+                user:req.body.user,
+                date
+            })
 
-            const newProtocol = await Protocol.create(req.body)
-
+            await User.updateOne({ _id:req.body.user}, { $inc:{
+                totalProt:1
+            }})
 
             return res.send({ message: "Protocolo criado com sucesso!", newProtocol })
         }
@@ -111,8 +127,15 @@ router.delete('/delete/:id', async (req, res) => {
 
 
     try {
+
+        const findUser = await Protocol.findOne({ _id: id })
+        
         await Protocol.findOneAndDelete({ _id: id })
-    
+
+        await User.updateOne({_id:findUser.user}, {$inc:{
+            totalProt:-1
+        }})
+
         return res.send('Protocolo deletado com sucesso')
     } catch (err) {
 

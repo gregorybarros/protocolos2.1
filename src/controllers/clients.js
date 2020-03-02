@@ -8,7 +8,7 @@ const router = express.Router()
 router.get('/', async (req,res) => {
 
     try {
-        const clients = await Client.find ().sort({name:1})
+        const clients = await Client.find().sort({createdAt:'desc'})
         res.send(clients)
     }
     catch (err) {
@@ -84,7 +84,7 @@ router.post('/addclient', async (req, res) => {
             if(await Client.findOne({ name, code }))
             return res.status(400).send({message: 'Cliente ja existe'})
                 
-        
+            
             const newClient = await Client.create(req.body)
             console.log(newClient)
 
@@ -101,16 +101,25 @@ router.post('/addclient', async (req, res) => {
 
 router.put('/edit', async (req, res) => {
 
-    const { name, slug, _id } = req.body
-
+    const { code, name, category, resp, email, adress, city, zip, state, since, obs, soft, _id } = req.body = req.body
+   
 
     try {
-        let EditClient = await Client.findOne({ _id: req.body._id }).updateOne({
+        let EditClient = await Client.findOne({ _id: _id }).updateOne({
 
-            name: req.body.name,
-            slug: req.body.slug
+            code, 
+            name, 
+            category, 
+            resp, 
+            email, 
+            adress, 
+            city, 
+            zip, 
+            state, 
+            since, 
+            obs, 
+            soft
         })
-    
         return res.send(EditClient)
     } catch (err) {
 
