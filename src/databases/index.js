@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 mongoose.Promise = global.Promise
-mongoose.connect("mongodb://localhost/apirest", {
+mongoose.connect("mongodb+srv://greg:greg@cluster0-sruem.mongodb.net/beta?retryWrites=true&w=majority", {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
